@@ -8,6 +8,9 @@ from langchain.vectorstores import Chroma
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate
+from gpt_researcher import GPTResearcher
+import asyncio
+from langchain.document_loaders import PyPDFLoader
 
 class ResearchField(Enum):
     COMPUTER_SCIENCE=1
@@ -47,7 +50,7 @@ def _extract_title() -> str:
     """
     return ""
 
-def _search(questions: list[str]) -> dict[str,str]:
+async def _search(questions: list[str], report_type="resource_report") -> dict[str,str]:
     """Search questions using GPT-Researcher.
 
     Args:
@@ -55,7 +58,12 @@ def _search(questions: list[str]) -> dict[str,str]:
     Returns:
         A dict of question -> search result.
     """
-    return {}
+    search_result = {}
+    for query in questions:
+        researcher = GPTResearcher(query=query, report_type=report_type, config_path=None)
+        report = asyncio.run(researcher.run())
+        search_result[query]=report
+    return search_result
 
 #TODO(@irene1391) Implementation.
 def _create_model(research_field:ResearchField,search_results:dict[str,str]) -> ConversationalRetrievalChain:
@@ -92,13 +100,17 @@ def create_model(path:str) -> ConversationalRetrievalChain:
         Chatbot
     """
     research_field = _extract_research_field()
-    title = _extract_title()
     keywords = _extract_keywords()
     citations = _extract_citations()
     questions = []
-    if title:
-        questions.append(f"Summarize {title}")
     questions.extend([f"What is {keyword}" for keyword in keywords])
     questions.extend([f"Summarize {citation}" for citation in citations])
+
+    loader = PyPDFLoader(path)
+    pages = loader.load_and_split()
+    paper = ''.join([p.page_content for p in pages])
+    if paper:
+        questions.append(f"Can you summarize this paper? {paper}")
+
     search_result = _search(questions)
     return _create_model(research_field,search_result)
