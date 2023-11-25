@@ -65,7 +65,6 @@ async def _search(questions: list[str], report_type="resource_report") -> dict[s
         search_result[query]=report
     return search_result
 
-
 #TODO(@irene1391) Implementation.
 def _create_model(research_field:ResearchField,search_results:dict[str,str]) -> ConversationalRetrievalChain:
     """Generate a LLM model with embeddings.
