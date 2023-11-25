@@ -57,7 +57,7 @@ def _search(questions: list[str]) -> dict[str,str]:
     """
     return {}
 
-#TODO(irene1391) Implementation.
+#TODO(@irene1391) Implementation.
 def _create_model(research_field:ResearchField,search_results:dict[str,str]) -> ConversationalRetrievalChain:
     """Generate a LLM model with embeddings.
 
