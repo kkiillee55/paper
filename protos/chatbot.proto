@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package chatbot;
+
+
+message ChatRequest {
+  optional string question = 1;   // User input question.
+  optional bytes file = 2;   // User uploaded file, should be bytes?
+  optional bool create_new_model = 3;   // Should we initialize new model based on the file?
+}
+
+message ChatResponse {
+  optional string answer = 1; // The answer from LLM.
+}
+
+service Chatbot {
+  rpc Chat(stream ChatRequest) returns (stream ChatResponse) {}
+}

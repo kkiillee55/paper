@@ -75,20 +75,20 @@ def _create_model(research_field:ResearchField,search_results:dict[str,str]) -> 
     Returns:
         A chain.
     """
-    # Code copied from langchain chatbot exmpale, need to change it.
-    # loader = WebBaseLoader("https://lilianweng.github.io/posts/2023-06-23-agent/")
-    # data = loader.load()
-    # text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
-    # all_splits = text_splitter.split_documents(data)
-    # vectorstore = Chroma.from_documents(documents=all_splits, embedding=OpenAIEmbeddings())
-    #
-    # llm = ChatOpenAI()
-    # retriever = vectorstore.as_retriever()
-    # memory = ConversationSummaryMemory(
-    #     llm=llm, memory_key="chat_history", return_messages=True
-    # )
-    # return ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
-    raise NotImplementedError
+    #Code copied from langchain chatbot exmpale, need to change it.
+    loader = WebBaseLoader("https://lilianweng.github.io/posts/2023-06-23-agent/")
+    data = loader.load()
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
+    all_splits = text_splitter.split_documents(data)
+    vectorstore = Chroma.from_documents(documents=all_splits, embedding=OpenAIEmbeddings())
+
+    llm = ChatOpenAI()
+    retriever = vectorstore.as_retriever()
+    memory = ConversationSummaryMemory(
+        llm=llm, memory_key="chat_history", return_messages=True
+    )
+    return ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
+    #raise NotImplementedError
 
 
 def create_model(path:str) -> ConversationalRetrievalChain:
@@ -114,3 +114,17 @@ def create_model(path:str) -> ConversationalRetrievalChain:
 
     search_result = _search(questions)
     return _create_model(research_field,search_result)
+
+def dummy_create_model():
+    loader = WebBaseLoader("https://lilianweng.github.io/posts/2023-06-23-agent/")
+    data = loader.load()
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
+    all_splits = text_splitter.split_documents(data)
+    vectorstore = Chroma.from_documents(documents=all_splits, embedding=OpenAIEmbeddings())
+
+    llm = ChatOpenAI()
+    retriever = vectorstore.as_retriever()
+    memory = ConversationSummaryMemory(
+        llm=llm, memory_key="chat_history", return_messages=True
+    )
+    return ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
